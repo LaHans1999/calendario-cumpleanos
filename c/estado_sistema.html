@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado del Sistema</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-bottom: 20px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+        .card h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        button {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .status-ok {
+            color: green;
+        }
+        .status-error {
+            color: red;
+        }
+        .action-row {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Estado del Sistema</h1>
+        
+        <div class="card">
+            <h3>Configuración del Sistema</h3>
+            <p><strong>URL del Script:</strong> <span id="scriptUrl"></span></p>
+            <p><strong>Modo CORS:</strong> <code>no-cors</code> (permite enviar datos pero no leer respuestas)</p>
+            <div class="action-row">
+                <button id="testConnection">Probar Conexión</button>
+                <span id="connectionStatus"></span>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Almacenamiento Local</h3>
+            <button id="refreshStorage">Actualizar</button>
+            <button id="clearStorage">Limpiar Todo</button>
+            
+            <h4>Usuario Actual</h4>
+            <pre id="currentUser">Cargando...</pre>
+            
+            <h4>Usuarios Registrados</h4>
+            <pre id="registeredUsers">Cargando...</pre>
+        </div>
+        
+        <div class="card">
+            <h3>Acciones</h3>
+            <button id="sendTestUser">Enviar Usuario de Prueba</button>
+            <button id="testGoogleAppsScript">Probar Script de Google Apps</button>
+            <button id="redeployForm">Volver a Implementar Formulario</button>
+            <div id="actionResult"></div>
+        </div>
+        
+        <div class="card">
+            <h3>Navegación</h3>
+            <p><a href="index.html">Ir al Formulario de Registro</a></p>
+            <p><a href="login.html">Ir a la Página de Login</a></p>
+            <p><a href="dashboard.html">Ir al Dashboard</a></p>
+            <p><a href="test_conexion.html">Ir a la Página de Prueba de Conexión</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar la URL del script
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzBlz3w20HQi27-CNrgG7_1c7IgVJamT-lKJN_9i5ffYhL-RPpmLExsozf2owtRoOaCYg/exec';
+            document.getElementById('scriptUrl').textContent = scriptURL;
+            
+            // Función para actualizar la información del almacenamiento local
+            function updateStorageInfo() {
+                // Mostrar usuario actual
+                const currentUserElem = document.getElementById('currentUser');
+                const currentUser = localStorage.getItem('user');
+                if (currentUser) {
+                    try {
+                        const userData = JSON.parse(currentUser);
+                        currentUserElem.textContent = JSON.stringify(userData, null, 2);
+                    } catch (e) {
+                        currentUserElem.textContent = 'Error al parsear: ' + e.message;
+                    }
+                } else {
+                    currentUserElem.textContent = 'No hay usuario actual';
+                }
+                
+                // Mostrar usuarios registrados
+                const registeredUsersElem = document.getElementById('registeredUsers');
+                const registeredUsers = localStorage.getItem('registeredUsers');
+                if (registeredUsers) {
+                    try {
+                        const usersData = JSON.parse(registeredUsers);
+                        registeredUsersElem.textContent = JSON.stringify(usersData, null, 2);
+                    } catch (e) {
+                        registeredUsersElem.textContent = 'Error al parsear: ' + e.message;
+                    }
+                } else {
+                    registeredUsersElem.textContent = 'No hay usuarios registrados';
+                }
+            }
+            
+            // Actualizar información inicial
+            updateStorageInfo();
+            
+            // Botón para actualizar almacenamiento
+            document.getElementById('refreshStorage').addEventListener('click', updateStorageInfo);
+            
+            // Botón para limpiar almacenamiento
+            document.getElementById('clearStorage').addEventListener('click', function() {
+                if (confirm('¿Estás seguro de que deseas eliminar todos los datos almacenados localmente?')) {
+                    localStorage.clear();
+                    updateStorageInfo();
+                    showActionResult('Almacenamiento local limpiado correctamente');
+                }
+            });
+            
+            // Botón para probar conexión
+            document.getElementById('testConnection').addEventListener('click', function() {
+                const connectionStatusElem = document.getElementById('connectionStatus');
+                connectionStatusElem.textContent = 'Probando...';
+                connectionStatusElem.className = '';
+                
+                fetch(scriptURL + '?test=1', { mode: 'no-cors' })
+                    .then(response => {
+                        console.log('Respuesta de prueba:', response);
+                        connectionStatusElem.textContent = '✓ Conexión exitosa';
+                        connectionStatusElem.className = 'status-ok';
+                    })
+                    .catch(error => {
+                        console.error('Error de conexión:', error);
+                        connectionStatusElem.textContent = '✗ Error: ' + error.message;
+                        connectionStatusElem.className = 'status-error';
+                    });
+            });
+            
+            // Botón para enviar usuario de prueba
+            document.getElementById('sendTestUser').addEventListener('click', function() {
+                const actionResultElem = document.getElementById('actionResult');
+                actionResultElem.innerHTML = '<p>Enviando usuario de prueba...</p>';
+                
+                // Crear datos de prueba
+                const formData = new FormData();
+                const testId = 'TEST-' + Date.now();
+                
+                formData.append('sheetName', 'Usuarios');
+                formData.append('action', 'register');
+                formData.append('idColaborador', testId);
+                formData.append('nombre', 'Usuario de Prueba');
+                formData.append('apellidoPaterno', 'Apellido Prueba');
+                formData.append('apellidoMaterno', 'Segundo Apellido');
+                formData.append('cumpleanos', '2000-01-01');
+                formData.append('compania', 'Empresa de Prueba');
+                formData.append('email', 'test' + Date.now() + '@example.com');
+                formData.append('password', 'Password123');
+                
+                // Enviar datos
+                fetch(scriptURL, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors'
+                })
+                .then(response => {
+                    console.log('Respuesta:', response);
+                    actionResultElem.innerHTML = `
+                        <p class="status-ok">✓ Datos de prueba enviados correctamente</p>
+                        <p>ID de prueba: ${testId}</p>
+                        <p>Verifica tu Google Sheets para confirmar que los datos llegaron correctamente.</p>
+                        <p>Si no aparecen los datos, revisa la consola del navegador y los registros del script de Google Apps.</p>
+                    `;
+                    
+                    // También guardar en localStorage para pruebas locales
+                    const testUser = {
+                        idColaborador: testId,
+                        nombre: 'Usuario de Prueba',
+                        apellidoPaterno: 'Apellido Prueba',
+                        apellidoMaterno: 'Segundo Apellido',
+                        cumpleanos: '2000-01-01',
+                        compania: 'Empresa de Prueba',
+                        email: 'test' + Date.now() + '@example.com'
+                    };
+                    
+                    // Agregar a usuarios registrados
+                    const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                    registeredUsers.push(testUser);
+                    localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                    
+                    // Actualizar información mostrada
+                    updateStorageInfo();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    actionResultElem.innerHTML = `
+                        <p class="status-error">✗ Error al enviar datos de prueba: ${error.message}</p>
+                        <p>Revisa la consola del navegador para más detalles.</p>
+                    `;
+                });
+            });
+            
+            // Función auxiliar para mostrar resultados de acciones
+            function showActionResult(message, isError = false) {
+                const actionResultElem = document.getElementById('actionResult');
+                actionResultElem.innerHTML = `<p class="${isError ? 'status-error' : 'status-ok'}">${message}</p>`;
+            }
+            
+            // Botón para volver a implementar el formulario (recargar la página de registro)
+            document.getElementById('redeployForm').addEventListener('click', function() {
+                window.open('index.html', '_blank');
+                showActionResult('Página de registro abierta en una nueva pestaña');
+            });
+            
+            // Botón para probar el script de Google Apps
+            document.getElementById('testGoogleAppsScript').addEventListener('click', function() {
+                const actionResultElem = document.getElementById('actionResult');
+                actionResultElem.innerHTML = '<p>Probando el script de Google Apps...</p>';
+                
+                // Intentar llamar a la función de prueba de configuración
+                fetch(scriptURL + '?test=configuration', {
+                    method: 'GET',
+                    mode: 'no-cors'
+                })
+                .then(response => {
+                    console.log('Respuesta de prueba del script:', response);
+                    actionResultElem.innerHTML = `
+                        <p class="status-ok">✓ Solicitud enviada al script de Google Apps</p>
+                        <p>La respuesta no se puede leer debido al modo 'no-cors', pero se ha enviado la solicitud.</p>
+                        <p>Por favor, revisa los registros de ejecución en Google Apps Script para ver el resultado.</p>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    actionResultElem.innerHTML = `
+                        <p class="status-error">✗ Error al probar el script: ${error.message}</p>
+                        <p>Revisa la consola del navegador para más detalles.</p>
+                    `;
+                });
+            });
+        });
+    </script>
+</body>
+</html>

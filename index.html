@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Colaborador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Registro de Colaborador</h1>
+        <form id="colaboradorForm">
+            <input type="hidden" name="sheetName" value="Usuarios">
+            <input type="hidden" name="action" value="register">
+            <div class="form-group">
+                <label for="idColaborador">ID Colaborador:</label>
+                <input type="text" id="idColaborador" name="idColaborador" autocomplete="off" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" autocomplete="given-name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="apellidoPaterno">Apellido Paterno:</label>
+                <input type="text" id="apellidoPaterno" name="apellidoPaterno" autocomplete="family-name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="apellidoMaterno">Apellido Materno:</label>
+                <input type="text" id="apellidoMaterno" name="apellidoMaterno" autocomplete="additional-name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="cumpleanos">Cumpleaños:</label>
+                <input type="date" id="cumpleanos" name="cumpleanos" autocomplete="bday" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="compania">Compañía:</label>
+                <select id="compania" name="compania" autocomplete="organization" required>
+                    <option value="">Seleccione una compañía</option>
+                    <option value="Legado">Legado</option>
+                    <option value="OOC">OOC</option>
+                    <option value="E Administradora">E Administradora</option>
+                    <option value="CHUBB">CHUBB</option>
+                    <option value="MSCI">MSCI</option>
+                    <option value="ProMedic">ProMedic</option>
+                    <option value="DEACERO">DEACERO</option>
+                    <option value="Legal Value">Legal Value</option>
+                    <option value="ARIES">ARIES</option>
+                    <option value="Aerolineas Ejecutivas">Aerolineas Ejecutivas</option>
+                    <option value="ALPEK">ALPEK</option>
+                    <option value="ARZENTIA">ARZENTIA</option>
+                    <option value="ATRIO">ATRIO</option>
+                    <option value="FINSA">FINSA</option>
+                    <option value="BBVA">BBVA</option>
+                    <option value="BALL">BALL</option>
+                    <option value="COTEMAR">COTEMAR</option>
+                    <option value="CULTO">CULTO</option>
+                    <option value="DAVID LINE">DAVID LINE</option>
+                    <option value="GLOBALTRANZ">GLOBALTRANZ</option>
+                    <option value="Hogan Lovells">Hogan Lovells</option>
+                    <option value="ICONN">ICONN</option>
+                    <option value="Korn Ferry">Korn Ferry</option>
+                    <option value="MAGNA">MAGNA</option>
+                    <option value="MASTTRO">MASTTRO</option>
+                    <option value="McKinsey">McKinsey</option>
+                    <option value="NUCOR">NUCOR</option>
+                    <option value="PIZZUTO">PIZZUTO</option>
+                    <option value="PETROSU">PETROSU</option>
+                    <option value="IZA">IZA</option>
+                    <option value="Baker McKenzie">Baker McKenzie</option>
+                    <option value="Banqum Capital">Banqum Capital</option>
+                    <option value="JLL">JLL</option>
+                    <option value="VALFRA">VALFRA</option>
+                    <option value="GAPER">GAPER</option>
+                    <option value="NEG">NEG</option>
+                    <option value="Shinhan">Shinhan</option>
+                    <option value="CYDSA">CYDSA</option>
+                    <option value="CINCO ASSET">CINCO ASSET</option>
+                    <option value="BCG">BCG</option>
+                    <option value="CAF">CAF</option>
+                    <option value="CARIA">CARIA</option>
+                    <option value="CONTOUR">CONTOUR</option>
+                    <option value="CREEL">CREEL</option>
+                    <option value="HOLLAND">HOLLAND</option>
+                    <option value="INTER">INTER</option>
+                    <option value="MULTIGAMA">MULTIGAMA</option>
+                    <option value="ORCA">ORCA</option>
+                    <option value="ORZEL">ORZEL</option>
+                    <option value="SABADELL">SABADELL</option>
+                    <option value="SANBARR">SANBARR</option>
+                    <option value="SANTAMARINA">SANTAMARINA</option>
+                    <option value="ALESGAR">ALESGAR</option>
+                    <option value="RRS LEGAL">RRS LEGAL</option>
+                    <option value="CONFICOR">CONFICOR</option>
+                    <option value="MULTIVA">MULTIVA</option>
+                    <option value="MP Investments">MP Investments</option>
+                    <option value="GOLDCO">GOLDCO</option>
+                    <option value="HSBC">HSBC</option>
+                    <option value="Citius">Citius</option>
+                    <option value="BIN">BIN</option>
+                    <option value="AQUAPLAS">AQUAPLAS</option>
+                    <option value="RIC ENERGY">RIC ENERGY</option>
+                    <option value="SAP">SAP</option>
+                    <option value="STEEL">STEEL</option>
+                    <option value="TREBOL">TREBOL</option>
+                    <option value="DIGAL">DIGAL</option>
+                    <option value="EY">EY</option>
+                    <option value="XIMEC">XIMEC</option>
+                    <option value="WOLF LOGISTICA ENERGETICA">WOLF LOGISTICA ENERGETICA</option>
+                    <option value="PERKINS">PERKINS</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" autocomplete="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" autocomplete="new-password" required>
+                <small>La contraseña debe tener al menos 8 caracteres, incluir una letra mayúscula, una minúscula y un número.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Contraseña:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit">Registrarse</button>
+                <button type="reset">Limpiar</button>
+            </div>
+            
+            <div class="form-footer">
+                ¿Ya tienes una cuenta? <a href="login.html">Iniciar sesión</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

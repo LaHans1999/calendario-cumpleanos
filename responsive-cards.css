@@ -1,0 +1,29 @@
+/* Media queries para diseño responsivo de tarjetas */
+@media (min-width: 1200px) {
+    .user-card {
+        width: calc(25% - 15px); /* 4 tarjetas por fila en pantallas grandes */
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    .user-card {
+        width: calc(33.333% - 15px); /* 3 tarjetas por fila en pantallas medianas-grandes */
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .user-card {
+        width: calc(50% - 15px); /* 2 tarjetas por fila en pantallas medianas */
+    }
+}
+
+@media (max-width: 767px) {
+    .user-card {
+        width: 100%; /* 1 tarjeta por fila en dispositivos móviles */
+    }
+    
+    .month-birthday-cards,
+    .all-users-container {
+        gap: 15px;
+    }
+}

@@ -1,0 +1,47 @@
+/* Mejoras visuales del dashboard */
+.main-content {
+    padding: 25px 30px;
+    background-color: #f8faff;
+}
+
+.birthday-month-container, 
+.all-users-container {
+    margin-bottom: 40px;
+}
+
+/* Mejora visual para destacar las tarjetas */
+.user-card {
+    transition: all 0.3s ease;
+}
+
+.user-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(77, 163, 255, 0.15);
+}
+
+/* Animación suave para las tarjetas */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-card {
+    animation: fadeInUp 0.5s ease forwards;
+    animation-delay: calc(var(--index) * 0.1s);
+    opacity: 0;
+}
+
+/* Título más distintivo */
+.all-birthdays-title,
+.birthday-month-container h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom-width: 2px;
+}

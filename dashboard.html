@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="additional-styles.css">
+    <link rel="stylesheet" href="responsive-cards.css">
+    <link rel="stylesheet" href="dashboard-visual-improvements.css">
+    <link rel="stylesheet" href="sections-layout.css">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar con la información del usuario -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-id-card profile-icon"></i>
+                <h2>Mi Perfil</h2>
+            </div>
+            <div id="userInfo" class="sidebar-user-info">
+                <p>Cargando información del usuario...</p>
+            </div>
+            <div class="sidebar-actions">
+                <a href="#" id="logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+            </div>
+        </aside>
+        
+        <!-- Contenido principal -->
+        <main class="main-content">
+            <h1><i class="fas fa-user-circle"></i> Bienvenido al Calendario de Cumpleaños</h1>
+            
+            <div id="otherUsers">
+                <h2><i class="fas fa-users"></i> Colaboradores</h2>
+                <div id="usersList">
+                    <p>Cargando lista de colaboradores...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="dashboard.js"></script>
+    <script src="sidebar.js"></script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de Conexión a Google Sheets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, button {
+            padding: 8px;
+            width: 100%;
+        }
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            min-height: 100px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prueba de Conexión a Google Sheets</h1>
+    
+    <div class="form-group">
+        <label for="scriptUrl">URL del Script de Google Apps:</label>
+        <input type="text" id="scriptUrl" value="https://script.google.com/macros/s/AKfycbzBlz3w20HQi27-CNrgG7_1c7IgVJamT-lKJN_9i5ffYhL-RPpmLExsozf2owtRoOaCYg/exec">
+    </div>
+    
+    <div class="form-group">
+        <button id="testButton">Probar Conexión</button>
+    </div>
+    
+    <div id="resultado">
+        <p>Los resultados de la prueba aparecerán aquí...</p>
+    </div>
+
+    <div class="form-group" style="margin-top: 30px;">
+        <button id="testDataButton">Enviar Datos de Prueba</button>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const testButton = document.getElementById('testButton');
+            const testDataButton = document.getElementById('testDataButton');
+            const resultado = document.getElementById('resultado');
+            
+            testButton.addEventListener('click', function() {
+                const scriptURL = document.getElementById('scriptUrl').value.trim();
+                
+                if (!scriptURL) {
+                    mostrarResultado('Por favor, ingresa la URL del script de Google Apps', 'error');
+                    return;
+                }
+                
+                mostrarResultado('Probando conexión...', '');
+                
+                // Hacer una solicitud simple GET para probar la conexión
+                fetch(scriptURL + '?test=1', {
+                    method: 'GET',
+                    mode: 'no-cors'
+                })
+                .then(response => {
+                    console.log('Respuesta:', response);
+                    mostrarResultado(`
+                        <p class="success">Conexión exitosa!</p>
+                        <p>Tipo de respuesta: ${response.type}</p>
+                        <p>Status: ${response.status || 'N/A (modo no-cors)'}</p>
+                        <p>URL: ${response.url}</p>
+                        <p>Nota: En modo 'no-cors', no podemos ver el contenido de la respuesta, pero la conexión parece funcionar.</p>
+                    `, '');
+                })
+                .catch(error => {
+                    console.error('Error de conexión:', error);
+                    mostrarResultado(`
+                        <p class="error">Error de conexión: ${error.message}</p>
+                        <p>Nombre del error: ${error.name}</p>
+                        <p>Revisa la consola del navegador para más detalles.</p>
+                    `, 'error');
+                });
+            });
+            
+            testDataButton.addEventListener('click', function() {
+                const scriptURL = document.getElementById('scriptUrl').value.trim();
+                
+                if (!scriptURL) {
+                    mostrarResultado('Por favor, ingresa la URL del script de Google Apps', 'error');
+                    return;
+                }
+                
+                mostrarResultado('Enviando datos de prueba...', '');
+                
+                // Crear un objeto FormData con datos de prueba
+                const formData = new FormData();
+                formData.append('sheetName', 'Respuestas');
+                formData.append('action', 'register');
+                formData.append('idColaborador', 'TEST-' + Date.now());
+                formData.append('nombre', 'Usuario de Prueba');
+                formData.append('apellidoPaterno', 'Apellido de Prueba');
+                formData.append('apellidoMaterno', 'Segundo Apellido');
+                formData.append('cumpleanos', '2000-01-01');
+                formData.append('compania', 'Empresa de Prueba');
+                formData.append('email', 'test@example.com');
+                formData.append('password', 'Password123');
+                
+                // Enviar los datos
+                fetch(scriptURL, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors'
+                })
+                .then(response => {
+                    console.log('Respuesta:', response);
+                    mostrarResultado(`
+                        <p class="success">Datos enviados correctamente!</p>
+                        <p>Tipo de respuesta: ${response.type}</p>
+                        <p>Status: ${response.status || 'N/A (modo no-cors)'}</p>
+                        <p>URL: ${response.url}</p>
+                        <p>Datos enviados:</p>
+                        <pre>${JSON.stringify({
+                            idColaborador: 'TEST-' + Date.now(),
+                            nombre: 'Usuario de Prueba',
+                            apellidoPaterno: 'Apellido de Prueba',
+                            apellidoMaterno: 'Segundo Apellido',
+                            cumpleanos: '2000-01-01',
+                            compania: 'Empresa de Prueba',
+                            email: 'test@example.com',
+                            password: 'Password123'
+                        }, null, 2)}</pre>
+                        <p>Verifica si estos datos aparecen en tu hoja de Google Sheets.</p>
+                    `, '');
+                })
+                .catch(error => {
+                    console.error('Error al enviar datos:', error);
+                    mostrarResultado(`
+                        <p class="error">Error al enviar datos: ${error.message}</p>
+                        <p>Nombre del error: ${error.name}</p>
+                        <p>Revisa la consola del navegador para más detalles.</p>
+                    `, 'error');
+                });
+            });
+            
+            function mostrarResultado(mensaje, tipo) {
+                resultado.innerHTML = mensaje;
+                if (tipo === 'error') {
+                    resultado.style.backgroundColor = '#ffebee';
+                    resultado.style.borderColor = '#ffcdd2';
+                } else if (tipo === 'success') {
+                    resultado.style.backgroundColor = '#e8f5e9';
+                    resultado.style.borderColor = '#c8e6c9';
+                } else {
+                    resultado.style.backgroundColor = '#f9f9f9';
+                    resultado.style.borderColor = '#ddd';
+                }
+            }
+        });
+    </script>
+    
+    <div style="margin-top: 30px;">
+        <p><a href="index.html">Volver al formulario principal</a></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico del Sistema</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #0d6efd;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            margin-top: 20px;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .test-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d1e7dd;
+            border: 1px solid #badbcc;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c2c7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Diagnóstico del Sistema</h1>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5>Información del Script</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>URL del Script:</strong> <span id="scriptUrl"></span></p>
+                <button id="testConnectionBtn" class="btn btn-primary">Probar Conexión</button>
+                <div id="connectionResult" class="test-result"></div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5>Prueba de Registro</h5>
+            </div>
+            <div class="card-body">
+                <form id="testRegisterForm">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="idColaborador" class="form-label">ID Colaborador:</label>
+                            <input type="text" id="idColaborador" name="idColaborador" class="form-control" value="test123">
+                        </div>
+                        <div class="col">
+                            <label for="nombre" class="form-label">Nombre:</label>
+                            <input type="text" id="nombre" name="nombre" class="form-control" value="Usuario">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="apellidoPaterno" class="form-label">Apellido Paterno:</label>
+                            <input type="text" id="apellidoPaterno" name="apellidoPaterno" class="form-control" value="Prueba">
+                        </div>
+                        <div class="col">
+                            <label for="password" class="form-label">Contraseña:</label>
+                            <input type="password" id="password" name="password" class="form-control" value="test123">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Probar Registro</button>
+                </form>
+                <div id="registerResult" class="test-result"></div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5>Información de la Hoja de Cálculo</h5>
+            </div>
+            <div class="card-body">
+                <button id="getDiagnosticBtn" class="btn btn-primary">Obtener Diagnóstico</button>
+                <div id="diagnosticResult" class="test-result">
+                    <pre id="diagnosticData"></pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4 text-center">
+            <a href="index.html" class="btn btn-secondary">Volver al Inicio</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // URL del script de Google Apps Script
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzBlz3w20HQi27-CNrgG7_1c7IgVJamT-lKJN_9i5ffYhL-RPpmLExsozf2owtRoOaCYg/exec';
+            document.getElementById('scriptUrl').textContent = scriptURL;
+            
+            // Probar conexión
+            document.getElementById('testConnectionBtn').addEventListener('click', function() {
+                const resultDiv = document.getElementById('connectionResult');
+                resultDiv.innerHTML = '<p>Probando conexión...</p>';
+                resultDiv.className = 'test-result';
+                
+                fetch(`${scriptURL}?action=diagnose`, {
+                    method: 'GET',
+                    mode: 'no-cors'
+                })
+                .then(response => {
+                    resultDiv.innerHTML = '<p>¡Conexión exitosa! (Respuesta opaca debido a no-cors)</p>';
+                    resultDiv.className = 'test-result success';
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p>Error de conexión: ${error.message}</p>`;
+                    resultDiv.className = 'test-result error';
+                });
+            });
+            
+            // Probar registro
+            document.getElementById('testRegisterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const resultDiv = document.getElementById('registerResult');
+                resultDiv.innerHTML = '<p>Enviando datos de prueba...</p>';
+                resultDiv.className = 'test-result';
+                
+                const formData = new FormData();
+                formData.append('action', 'register');
+                formData.append('idColaborador', document.getElementById('idColaborador').value);
+                formData.append('nombre', document.getElementById('nombre').value);
+                formData.append('apellidoPaterno', document.getElementById('apellidoPaterno').value);
+                formData.append('password', document.getElementById('password').value);
+                
+                fetch(scriptURL, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors'
+                })
+                .then(response => {
+                    resultDiv.innerHTML = '<p>¡Datos enviados correctamente! (Respuesta opaca debido a no-cors)</p>';
+                    resultDiv.className = 'test-result success';
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `<p>Error al enviar datos: ${error.message}</p>`;
+                    resultDiv.className = 'test-result error';
+                });
+            });
+            
+            // Obtener diagnóstico
+            document.getElementById('getDiagnosticBtn').addEventListener('click', function() {
+                const resultDiv = document.getElementById('diagnosticResult');
+                const dataDiv = document.getElementById('diagnosticData');
+                
+                resultDiv.className = 'test-result';
+                dataDiv.textContent = 'Obteniendo diagnóstico...';
+                
+                // Como no podemos obtener la respuesta real debido a no-cors,
+                // mostramos información simulada
+                setTimeout(() => {
+                    const diagnosticInfo = {
+                        message: "Esta es una simulación de diagnóstico porque no podemos leer la respuesta real con no-cors",
+                        instructions: [
+                            "Para ver el diagnóstico real:",
+                            "1. Abre el script de Google Apps Script",
+                            "2. Ejecuta la función diagnoseRequest manualmente",
+                            "3. Revisa los logs en Ver > Registros"
+                        ],
+                        recommendedChecks: [
+                            "Verifica que la hoja 'Usuarios' existe en tu Google Sheets",
+                            "Asegúrate de que el script tiene permisos para modificar la hoja",
+                            "Revisa que la URL del script es correcta en todos los archivos",
+                            "Verifica que el script está desplegado como aplicación web",
+                            "Comprueba que tienes habilitada la opción 'Ejecutar como: tú' y 'Quién tiene acceso: Cualquiera'"
+                        ]
+                    };
+                    
+                    dataDiv.textContent = JSON.stringify(diagnosticInfo, null, 2);
+                    resultDiv.className = 'test-result success';
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>

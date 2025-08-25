@@ -1,0 +1,18 @@
+/* Estilos adicionales */
+.no-birthdays-message {
+    background-color: #f5f9ff;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    color: #4a6280;
+    font-size: 16px;
+    margin: 20px 0;
+    border-left: 4px solid #4da3ff;
+}
+
+/* Estilo para el mensaje de no cumpleaños en el mes actual */
+.birthday-month-container .no-birthdays-message {
+    background-color: #fff8e8;
+    color: #e67700;
+    border-left: 4px solid #ffb619;
+}

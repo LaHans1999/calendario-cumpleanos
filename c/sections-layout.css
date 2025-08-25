@@ -1,0 +1,58 @@
+/* Estilos para las secciones del dashboard */
+.dashboard-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.dashboard-section {
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.birthday-section {
+    order: 1; /* Aparece primero */
+}
+
+.other-users-section {
+    order: 2; /* Aparece segundo */
+    background-color: #f5f9ff;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(51, 153, 255, 0.15);
+    border-left: 5px solid #3399ff;
+}
+
+.other-users-section h3 {
+    color: #2a6496;
+    margin-top: 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(51, 153, 255, 0.3);
+    font-size: 22px;
+}
+
+/* Asegurarse de que el contenido de la sección de cumpleaños de agosto se muestre correctamente */
+.birthday-section .birthday-month-container {
+    margin-bottom: 0;
+}
+
+/* Ajuste de espaciado general */
+.main-content {
+    padding-bottom: 50px;
+}
+
+/* Añadir un poco de espacio adicional en dispositivos móviles */
+@media (max-width: 768px) {
+    .dashboard-sections {
+        gap: 30px;
+    }
+    
+    .dashboard-section {
+        padding: 20px;
+    }
+    
+    .other-users-section {
+        padding: 20px;
+    }
+}
