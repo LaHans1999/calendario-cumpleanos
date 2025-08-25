@@ -88,33 +88,51 @@ const syncScript = {
             const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
             const userFound = existingUsers.find(u => u.idColaborador === idColaborador);
             
-            if (userFound) {
-                // Si encontramos el usuario en localStorage, lo devolvemos directamente
+            if (userFound && this.isUserDataComplete(userFound)) {
+                // Si encontramos el usuario en localStorage y sus datos están completos, lo devolvemos directamente
+                console.log("Usuario encontrado en localStorage con datos completos:", userFound);
                 resolve(userFound);
             } else {
-                // Si no encontramos el usuario en localStorage, hacemos una petición al servidor
+                console.log("Usuario no encontrado o con datos incompletos, buscando en el servidor...");
+                // Si no encontramos el usuario en localStorage o sus datos están incompletos, hacemos una petición al servidor
                 fetch(`${this.scriptURL}?action=getUserData&idColaborador=${encodeURIComponent(idColaborador)}`, {
                     method: 'GET',
                     mode: 'no-cors'
                 })
                 .then(() => {
                     // Como estamos en modo no-cors, no podemos leer la respuesta
-                    // Creamos un usuario básico como respuesta de ejemplo
-                    const user = {
-                        idColaborador: idColaborador,
-                        nombre: 'Usuario Recuperado',
-                        apellidoPaterno: 'Recuperado',
-                        apellidoMaterno: '',
-                        cumpleanos: '2000-01-01',
-                        email: `${idColaborador}@ejemplo.com`,
-                        compania: 'Empresa'
-                    };
+                    // Intentamos buscar el usuario nuevamente en caso de que otro proceso lo haya actualizado
+                    const updatedUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+                    let updatedUser = updatedUsers.find(u => u.idColaborador === idColaborador);
                     
-                    // Añadir el usuario a la lista de usuarios registrados
-                    existingUsers.push(user);
-                    localStorage.setItem('registeredUsers', JSON.stringify(existingUsers));
+                    if (!updatedUser || !this.isUserDataComplete(updatedUser)) {
+                        // Si aún no lo encontramos o está incompleto, creamos uno con datos básicos
+                        updatedUser = {
+                            idColaborador: idColaborador,
+                            nombre: 'Usuario Recuperado',
+                            apellidoPaterno: 'Recuperado',
+                            apellidoMaterno: '',
+                            cumpleanos: '2000-01-01',
+                            email: `${idColaborador}@ejemplo.com`,
+                            compania: 'Empresa'
+                        };
+                        
+                        // Si ya existía un usuario con ese ID, actualizamos sus propiedades
+                        const existingIndex = updatedUsers.findIndex(u => u.idColaborador === idColaborador);
+                        if (existingIndex >= 0) {
+                            // Mantener los datos existentes y solo añadir los que faltan
+                            updatedUser = { ...updatedUsers[existingIndex], ...updatedUser };
+                            updatedUsers[existingIndex] = updatedUser;
+                        } else {
+                            // Añadir el nuevo usuario
+                            updatedUsers.push(updatedUser);
+                        }
+                        
+                        localStorage.setItem('registeredUsers', JSON.stringify(updatedUsers));
+                    }
                     
-                    resolve(user);
+                    console.log("Usuario recuperado/actualizado:", updatedUser);
+                    resolve(updatedUser);
                 })
                 .catch(error => {
                     console.error('Error al obtener datos del usuario:', error);
@@ -122,6 +140,12 @@ const syncScript = {
                 });
             }
         });
+    },
+    
+    // Método para verificar si los datos de un usuario están completos
+    isUserDataComplete: function(user) {
+        const requiredFields = ['idColaborador', 'nombre', 'apellidoPaterno', 'cumpleanos', 'email', 'compania'];
+        return requiredFields.every(field => user[field] && user[field] !== '');
     },
     
     syncAll: function() {
@@ -136,10 +160,76 @@ const syncScript = {
                     if (updatedUser) {
                         // Actualizar los datos del usuario actual
                         localStorage.setItem('user', JSON.stringify(updatedUser));
+                        console.log("Usuario actual actualizado con datos sincronizados:", updatedUser);
+                    } else {
+                        // Si no encontramos al usuario en la lista sincronizada, lo intentamos obtener específicamente
+                        return this.getUserData(currentUser.idColaborador)
+                            .then(specificUser => {
+                                localStorage.setItem('user', JSON.stringify(specificUser));
+                                console.log("Usuario actualizado específicamente:", specificUser);
+                                return users;
+                            });
                     }
                 }
                 
                 return users;
+            });
+    },
+    
+    // Método para intentar recuperar datos de usuario perdidos
+    recoverUserData: function() {
+        const currentUser = JSON.parse(localStorage.getItem('user'));
+        if (!currentUser) {
+            return Promise.reject(new Error("No hay usuario activo"));
+        }
+        
+        // Mostrar indicador de recuperación
+        const message = document.createElement('div');
+        message.style.position = 'fixed';
+        message.style.top = '10px';
+        message.style.left = '50%';
+        message.style.transform = 'translateX(-50%)';
+        message.style.background = '#333';
+        message.style.color = '#fff';
+        message.style.padding = '10px 20px';
+        message.style.borderRadius = '5px';
+        message.style.zIndex = '9999';
+        message.textContent = 'Recuperando datos de usuario...';
+        document.body.appendChild(message);
+        
+        // Intentar sincronizar todos los datos primero
+        return this.syncAll()
+            .then(() => {
+                // Verificar si ahora tenemos datos completos
+                const updatedUser = JSON.parse(localStorage.getItem('user'));
+                if (this.isUserDataComplete(updatedUser)) {
+                    message.textContent = 'Datos recuperados correctamente';
+                    message.style.background = '#4CAF50';
+                    setTimeout(() => {
+                        document.body.removeChild(message);
+                    }, 3000);
+                    return updatedUser;
+                } else {
+                    // Si aún no tenemos datos completos, intentamos especificamente
+                    return this.getUserData(currentUser.idColaborador)
+                        .then(specificUser => {
+                            localStorage.setItem('user', JSON.stringify(specificUser));
+                            message.textContent = 'Datos parcialmente recuperados';
+                            message.style.background = '#FF9800';
+                            setTimeout(() => {
+                                document.body.removeChild(message);
+                            }, 3000);
+                            return specificUser;
+                        });
+                }
+            })
+            .catch(error => {
+                message.textContent = 'Error al recuperar datos';
+                message.style.background = '#F44336';
+                setTimeout(() => {
+                    document.body.removeChild(message);
+                }, 3000);
+                return Promise.reject(error);
             });
     }
 };
