@@ -14,9 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("Datos del usuario:", user);
     console.log("Propiedades disponibles:", Object.keys(user));
     
-    // Verificar si tenemos todos los datos necesarios
-    const isComplete = window.syncScript && window.syncScript.isUserDataComplete(user);
-    
     // Mostrar información del usuario en la barra lateral
     const userInfoElement = document.getElementById('userInfo');
     userInfoElement.innerHTML = `
@@ -25,51 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
         <p><i class="fas fa-birthday-cake"></i> <strong>Cumpleaños:</strong> ${formatDate(user.cumpleanos) || ''}</p>
         <p><i class="fas fa-building"></i> <strong>Compañía:</strong> ${user.compania || ''}</p>
     `;
-    
-    // Si los datos están incompletos, mostrar mensaje y botón para recuperar
-    if (!isComplete) {
-        const recoveryMessage = document.createElement('div');
-        recoveryMessage.classList.add('recovery-alert');
-        recoveryMessage.innerHTML = `
-            <p><i class="fas fa-exclamation-circle"></i> Se ha iniciado sesión, pero no se encontraron todos los datos del usuario.</p>
-            <button id="recoverDataBtn" class="btn btn-warning">
-                <i class="fas fa-sync"></i> Intentar recuperar datos
-            </button>
-        `;
-        document.querySelector('.main-content').prepend(recoveryMessage);
-        
-        // Añadir evento al botón de recuperación
-        document.getElementById('recoverDataBtn').addEventListener('click', function() {
-            if (window.syncScript) {
-                this.disabled = true;
-                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Recuperando...';
-                
-                window.syncScript.recoverUserData()
-                    .then(updatedUser => {
-                        // Actualizar la información mostrada
-                        userInfoElement.innerHTML = `
-                            <p><i class="fas fa-user"></i> <strong>Nombre:</strong> ${updatedUser.nombre || ''}</p>
-                            <p><i class="fas fa-user-tag"></i> <strong>Apellido:</strong> ${updatedUser.apellidoPaterno || ''}</p>
-                            <p><i class="fas fa-birthday-cake"></i> <strong>Cumpleaños:</strong> ${formatDate(updatedUser.cumpleanos) || ''}</p>
-                            <p><i class="fas fa-building"></i> <strong>Compañía:</strong> ${updatedUser.compania || ''}</p>
-                        `;
-                        
-                        // Si la recuperación fue exitosa, quitar el mensaje
-                        if (window.syncScript.isUserDataComplete(updatedUser)) {
-                            recoveryMessage.remove();
-                        } else {
-                            this.disabled = false;
-                            this.innerHTML = '<i class="fas fa-sync"></i> Intentar de nuevo';
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error al recuperar datos:", error);
-                        this.disabled = false;
-                        this.innerHTML = '<i class="fas fa-sync"></i> Intentar de nuevo';
-                    });
-            }
-        });
-    }
     
     // Obtener todos los usuarios registrados
     const registeredUsersStr = localStorage.getItem('registeredUsers');
