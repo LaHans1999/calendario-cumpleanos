@@ -5,36 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro de Colaborador</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/responsive-forms.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <h1>Registro de Colaborador</h1>
-        <form id="colaboradorForm">
+        <form id="colaboradorForm" class="registration-form">
             <input type="hidden" name="sheetName" value="Usuarios">
             <input type="hidden" name="action" value="register">
+            
             <div class="form-group">
                 <label for="idColaborador">ID Colaborador:</label>
-                <input type="text" id="idColaborador" name="idColaborador" autocomplete="off" required>
+                <input type="text" id="idColaborador" name="idColaborador" autocomplete="off" placeholder="Ingresa tu ID de colaborador" required>
+                <span class="error-message">Por favor ingresa un ID de colaborador válido</span>
             </div>
             
-            <div class="form-group">
-                <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" autocomplete="given-name" required>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" autocomplete="given-name" placeholder="Tu nombre" required>
+                    <span class="error-message">Por favor ingresa tu nombre</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="apellidoPaterno">Apellido Paterno:</label>
+                    <input type="text" id="apellidoPaterno" name="apellidoPaterno" autocomplete="family-name" placeholder="Tu apellido paterno" required>
+                    <span class="error-message">Por favor ingresa tu apellido paterno</span>
+                </div>
             </div>
             
-            <div class="form-group">
-                <label for="apellidoPaterno">Apellido Paterno:</label>
-                <input type="text" id="apellidoPaterno" name="apellidoPaterno" autocomplete="family-name" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="apellidoMaterno">Apellido Materno:</label>
-                <input type="text" id="apellidoMaterno" name="apellidoMaterno" autocomplete="additional-name" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="cumpleanos">Cumpleaños:</label>
-                <input type="date" id="cumpleanos" name="cumpleanos" autocomplete="bday" required>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="apellidoMaterno">Apellido Materno:</label>
+                    <input type="text" id="apellidoMaterno" name="apellidoMaterno" autocomplete="additional-name" placeholder="Tu apellido materno" required>
+                    <span class="error-message">Por favor ingresa tu apellido materno</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cumpleanos">Cumpleaños:</label>
+                    <input type="date" id="cumpleanos" name="cumpleanos" autocomplete="bday" required>
+                    <span class="error-message">Por favor selecciona tu fecha de cumpleaños</span>
+                </div>
             </div>
             
             <div class="form-group">
@@ -113,25 +125,35 @@
                     <option value="WOLF LOGISTICA ENERGETICA">WOLF LOGISTICA ENERGETICA</option>
                     <option value="PERKINS">PERKINS</option>
                 </select>
+                <span class="error-message">Por favor selecciona una compañía</span>
             </div>
             
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" autocomplete="email" required>
+                <input type="email" id="email" name="email" autocomplete="email" placeholder="correo@ejemplo.com" required>
+                <span class="error-message">Por favor ingresa un correo electrónico válido</span>
             </div>
             
-            <div class="form-group">
+            <div class="form-group password-field">
                 <label for="password">Contraseña:</label>
                 <input type="password" id="password" name="password" autocomplete="new-password" required>
+                <button type="button" class="password-toggle" tabindex="-1">
+                    <i class="fas fa-eye"></i>
+                </button>
                 <small>La contraseña debe tener al menos 8 caracteres, incluir una letra mayúscula, una minúscula y un número.</small>
+                <span class="error-message">La contraseña no cumple con los requisitos</span>
             </div>
             
-            <div class="form-group">
+            <div class="form-group password-field">
                 <label for="confirmPassword">Confirmar Contraseña:</label>
                 <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required>
+                <button type="button" class="password-toggle" tabindex="-1">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <span class="error-message">Las contraseñas no coinciden</span>
             </div>
             
-            <div class="form-group">
+            <div class="form-group form-actions">
                 <button type="submit">Registrarse</button>
                 <button type="reset">Limpiar</button>
             </div>
@@ -142,6 +164,6 @@
         </form>
     </div>
 
-    <script src="script.js"></script>
+    <script src="js/form-validation.js"></script>
 </body>
 </html>
