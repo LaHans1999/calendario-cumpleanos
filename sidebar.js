@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // En dispositivos móviles, cerrar el sidebar al hacer clic en el contenido principal
+    // En celulares
     const mainContent = document.querySelector('.main-content');
     if (mainContent) {
         mainContent.addEventListener('click', function() {
