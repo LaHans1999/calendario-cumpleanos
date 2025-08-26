@@ -34,16 +34,18 @@ document.addEventListener('DOMContentLoaded', function() {
         
         fetch(scriptURL, {
             method: 'POST',
-            body: formData,
-            mode: 'no-cors' // Esto evita problemas de CORS pero hace que la respuesta sea "opaca"
+            body: formData
+            // Eliminamos mode: 'no-cors' para poder procesar la respuesta
         })
         .then(response => {
             console.log('Respuesta recibida:', response);
-            if (response.type === 'opaque') {
-                console.log('Respuesta opaca recibida (esto es normal con mode: no-cors)');
+            if (!response.ok) {
+                throw new Error(`Error de red: ${response.status}`);
             }
-            
-            // Con mode: 'no-cors' no podemos leer la respuesta, así que asumimos éxito
+            return response.json(); // Procesar la respuesta como JSON
+        })
+        .then(data => {
+            console.log('Datos de respuesta:', data);
             
             // Almacenar los datos del usuario en localStorage para uso futuro
             const userData = {

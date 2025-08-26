@@ -22,36 +22,21 @@ const syncScript = {
             
             // Hacer la petición al servidor
             fetch(`${this.scriptURL}?action=getUsers`, {
-                method: 'GET',
-                mode: 'no-cors'
+                method: 'GET'
+                // Se elimina mode: 'no-cors' para poder procesar la respuesta
             })
-            .then(() => {
-                // Como estamos en modo no-cors, no podemos leer la respuesta
-                // Para fines de demostración, vamos a crear un array de usuarios de ejemplo
-                // En una implementación real, los datos provendrían del servidor
-                const demoUsers = [
-                    {
-                        idColaborador: "demo1",
-                        nombre: "Usuario",
-                        apellidoPaterno: "Demostración",
-                        apellidoMaterno: "Uno",
-                        cumpleanos: "1990-01-15",
-                        email: "demo1@ejemplo.com",
-                        compania: "Empresa A"
-                    },
-                    {
-                        idColaborador: "demo2",
-                        nombre: "Usuario",
-                        apellidoPaterno: "Demostración",
-                        apellidoMaterno: "Dos",
-                        cumpleanos: "1985-05-20",
-                        email: "demo2@ejemplo.com",
-                        compania: "Empresa B"
-                    }
-                ];
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error de red: ${response.status}`);
+                }
+                return response.json(); // Procesar la respuesta como JSON
+            })
+            .then(users => {
+                // Ahora estamos usando los datos reales de Google Sheets
+                console.log('Datos recibidos de Google Sheets:', users);
                 
                 // Guardar en localStorage
-                localStorage.setItem('registeredUsers', JSON.stringify(demoUsers));
+                localStorage.setItem('registeredUsers', JSON.stringify(users));
                 
                 // Actualizar mensaje
                 message.textContent = 'Datos sincronizados correctamente';
@@ -94,21 +79,18 @@ const syncScript = {
             } else {
                 // Si no encontramos el usuario en localStorage, hacemos una petición al servidor
                 fetch(`${this.scriptURL}?action=getUserData&idColaborador=${encodeURIComponent(idColaborador)}`, {
-                    method: 'GET',
-                    mode: 'no-cors'
+                    method: 'GET'
+                    // Se elimina mode: 'no-cors' para poder procesar la respuesta
                 })
-                .then(() => {
-                    // Como estamos en modo no-cors, no podemos leer la respuesta
-                    // Creamos un usuario básico como respuesta de ejemplo
-                    const user = {
-                        idColaborador: idColaborador,
-                        nombre: 'Usuario Recuperado',
-                        apellidoPaterno: 'Recuperado',
-                        apellidoMaterno: '',
-                        cumpleanos: '2000-01-01',
-                        email: `${idColaborador}@ejemplo.com`,
-                        compania: 'Empresa'
-                    };
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error de red: ${response.status}`);
+                    }
+                    return response.json(); // Procesar la respuesta como JSON
+                })
+                .then(user => {
+                    // Ahora estamos usando los datos reales del usuario de Google Sheets
+                    console.log('Datos de usuario recibidos:', user);
                     
                     // Añadir el usuario a la lista de usuarios registrados
                     existingUsers.push(user);
