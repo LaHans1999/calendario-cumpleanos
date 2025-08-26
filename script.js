@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('colaboradorForm');
     
     // URL del script de Google Apps
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbx84XfduDrWf6IjvWno2aG94sSfbitKpXqigB95rEpmXHPCC4N_47Y8N6SQ8adwvPcKFA/exec'
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbziHbts4cLX50tdm-thJOeGFWy3idYFvny4RVqgVt5zy3fofpKMuxXts6L_DeBbB0YOZA/exec'
     
     // Verificar que el formulario existe antes de agregar event listeners
     if (!form) {
