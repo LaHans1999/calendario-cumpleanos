@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de CORS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prueba de CORS con Google Apps Script</h1>
+    
+    <div>
+        <p>Esta página prueba la conexión CORS con ambas URLs del script:</p>
+        <p>URL Antigua: <code>https://script.google.com/macros/s/AKfycbwk8aA1iJTboI0kMX4aYgtt3UymurosaREjBuxiIcgesC9FzscMaH2j_GH2yXFy1l0FTA/exec</code></p>
+        <p>URL Nueva: <code>https://script.google.com/macros/s/AKfycbx84XfduDrWf6IjvWno2aG94sSfbitKpXqigB95rEpmXHPCC4N_47Y8N6SQ8adwvPcKFA/exec</code></p>
+    </div>
+    
+    <div>
+        <button id="testOldUrl">Probar URL Antigua</button>
+        <button id="testNewUrl">Probar URL Nueva</button>
+    </div>
+    
+    <h2>Resultado:</h2>
+    <pre id="result">Haga clic en uno de los botones para probar la conexión...</pre>
+    
+    <script>
+        document.getElementById('testOldUrl').addEventListener('click', function() {
+            testCorsConnection('https://script.google.com/macros/s/AKfycbwk8aA1iJTboI0kMX4aYgtt3UymurosaREjBuxiIcgesC9FzscMaH2j_GH2yXFy1l0FTA/exec');
+        });
+        
+        document.getElementById('testNewUrl').addEventListener('click', function() {
+            testCorsConnection('https://script.google.com/macros/s/AKfycbx84XfduDrWf6IjvWno2aG94sSfbitKpXqigB95rEpmXHPCC4N_47Y8N6SQ8adwvPcKFA/exec');
+        });
+        
+        function testCorsConnection(url) {
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = 'Probando conexión con ' + url + '...';
+            resultElement.className = '';
+            
+            // Crear una consulta simple para probar CORS
+            const testUrl = `${url}?action=login&idColaborador=test&password=test`;
+            
+            // Registrar información de la solicitud para depuración
+            console.log('Enviando solicitud a:', testUrl);
+            
+            // Intentar hacer una solicitud simple
+            fetch(testUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                console.log('Respuesta recibida:', response);
+                const headers = {};
+                response.headers.forEach((value, key) => {
+                    headers[key] = value;
+                });
+                
+                let result = '';
+                result += `<span class="success">✓ Conexión exitosa!</span>\n`;
+                result += `Status: ${response.status} ${response.statusText}\n`;
+                result += `Tipo: ${response.type}\n\n`;
+                result += `Headers:\n${JSON.stringify(headers, null, 2)}\n\n`;
+                
+                return response.text().then(text => {
+                    try {
+                        const json = JSON.parse(text);
+                        result += `Body:\n${JSON.stringify(json, null, 2)}`;
+                    } catch (e) {
+                        result += `Body (text):\n${text}`;
+                    }
+                    return result;
+                });
+            })
+            .then(result => {
+                resultElement.innerHTML = result;
+                resultElement.className = 'success';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                let errorDetails = '';
+                errorDetails += `<span class="error">✗ Error de conexión</span>\n`;
+                errorDetails += `Nombre: ${error.name}\n`;
+                errorDetails += `Mensaje: ${error.message}\n\n`;
+                errorDetails += `Es posible que este error sea causado por problemas de CORS.\n`;
+                errorDetails += `Verifique que su script de Google Apps tenga la función doOptions() implementada correctamente y que el despliegue sea el más reciente.`;
+                
+                resultElement.innerHTML = errorDetails;
+                resultElement.className = 'error';
+            });
+        }
+    </script>
+</body>
+</html>
