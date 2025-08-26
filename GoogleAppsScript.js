@@ -1,6 +1,25 @@
 // Google Apps Script para calendario de cumpleaños
 // Este código debe ser copiado y pegado en tu script de Google Apps
 
+// Función para manejar las solicitudes OPTIONS (necesaria para CORS)
+function doOptions(e) {
+  // Configurar los encabezados CORS para permitir solicitudes desde cualquier origen
+  var headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Max-Age': '86400'
+  };
+  
+  // Crear y devolver la respuesta
+  return ContentService.createTextOutput('')
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeader('Access-Control-Allow-Origin', headers['Access-Control-Allow-Origin'])
+    .setHeader('Access-Control-Allow-Methods', headers['Access-Control-Allow-Methods'])
+    .setHeader('Access-Control-Allow-Headers', headers['Access-Control-Allow-Headers'])
+    .setHeader('Access-Control-Max-Age', headers['Access-Control-Max-Age']);
+}
+
 // Función principal que maneja las solicitudes GET
 function doGet(e) {
   var action = e.parameter.action;
@@ -38,8 +57,8 @@ function doGet(e) {
   return ContentService.createTextOutput(JSON.stringify(response))
     .setMimeType(ContentService.MimeType.JSON)
     .setHeader('Access-Control-Allow-Origin', '*')
-    .setHeader('Access-Control-Allow-Methods', 'GET, POST')
-    .setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
 // Función para manejar solicitudes POST
@@ -71,8 +90,8 @@ function doPost(e) {
   return ContentService.createTextOutput(JSON.stringify(response))
     .setMimeType(ContentService.MimeType.JSON)
     .setHeader('Access-Control-Allow-Origin', '*')
-    .setHeader('Access-Control-Allow-Methods', 'GET, POST')
-    .setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    .setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 }
 
 // Función para autenticar usuarios

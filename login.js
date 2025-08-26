@@ -23,7 +23,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Hacer petición al servidor para verificar las credenciales
         fetch(`${scriptURL}?action=login&idColaborador=${encodeURIComponent(idColaborador)}&password=${encodeURIComponent(password)}`, {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
             // Eliminamos mode: 'no-cors' para poder procesar la respuesta
         })
         .then(response => {
