@@ -42,13 +42,19 @@ document.addEventListener('DOMContentLoaded', function() {
             
         } catch (error) {
             console.error('Error al procesar usuarios registrados:', error);
-            document.getElementById('usersList').innerHTML = `
-                <p>Error al cargar la lista de colaboradores: ${error.message}</p>
+            document.getElementById('currentMonthContent').innerHTML = `
+                <p class="error-message">Error al cargar la lista de colaboradores: ${error.message}</p>
+            `;
+            document.getElementById('otherUsersContent').innerHTML = `
+                <p class="error-message">Error al cargar la lista de colaboradores: ${error.message}</p>
             `;
         }
     } else {
-        document.getElementById('usersList').innerHTML = `
-            <p>No hay otros colaboradores registrados.</p>
+        document.getElementById('currentMonthContent').innerHTML = `
+            <p class="no-birthdays-message">No hay colaboradores registrados.</p>
+        `;
+        document.getElementById('otherUsersContent').innerHTML = `
+            <p class="no-birthdays-message">No hay colaboradores registrados.</p>
         `;
     }
     
@@ -67,10 +73,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Función para mostrar la lista de otros usuarios
 function displayOtherUsers(users) {
-    const usersListElement = document.getElementById('usersList');
+    const currentMonthContent = document.getElementById('currentMonthContent');
+    const otherUsersContent = document.getElementById('otherUsersContent');
     
     if (users.length === 0) {
-        usersListElement.innerHTML = `<p>No hay otros colaboradores registrados.</p>`;
+        currentMonthContent.innerHTML = `<p class="no-birthdays-message">No hay colaboradores registrados.</p>`;
+        otherUsersContent.innerHTML = `<p class="no-birthdays-message">No hay colaboradores registrados.</p>`;
         return;
     }
     
@@ -97,9 +105,7 @@ function displayOtherUsers(users) {
                        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
     
     thisMonthHTML = `
-        <div class="birthday-month-container">
-            <h3><i class="fas fa-calendar-alt"></i> Cumpleaños de ${monthNames[currentMonth - 1]}</h3>
-            <div class="month-birthday-cards">
+        <div class="month-birthday-cards cards-container">
     `;
     
     if (birthdaysThisMonth.length > 0) {
@@ -125,7 +131,6 @@ function displayOtherUsers(users) {
     }
     
     thisMonthHTML += `
-            </div>
         </div>
     `;
     
@@ -173,21 +178,12 @@ function displayOtherUsers(users) {
     });
     }
     
-    // Combinar el HTML y agregarlo al elemento
-    usersListElement.innerHTML = `
-        <div class="dashboard-sections">
-            <section class="dashboard-section birthday-section">
-                ${thisMonthHTML}
-            </section>
-            
-            <section class="dashboard-section other-users-section">
-                <h3 class="all-birthdays-title"><i class="fas fa-users"></i> Otros colaboradores</h3>
-                <div class="all-users-container">
-                    ${othersHTML}
-                </div>
-            </section>
-        </div>
-    `;
+    // Actualizar el contenido de las secciones
+    // Actualizar la sección de cumpleaños del mes actual
+    currentMonthContent.innerHTML = thisMonthHTML;
+    
+    // Actualizar la sección de otros colaboradores
+    otherUsersContent.innerHTML = othersHTML;
     
     // comprobar cambio de mes
     setupMonthChangeCheck();

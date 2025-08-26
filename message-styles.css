@@ -1,0 +1,40 @@
+.no-birthdays-message {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.error-message {
+    padding: 20px;
+    text-align: center;
+    color: #842029;
+    background-color: #f8d7da;
+    border: 1px solid #f5c2c7;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+/* Asegurar que las secciones tengan suficiente espacio */
+.dashboard-section {
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+/* Mejorar la visualización de los contenedores de tarjetas */
+.month-birthday-cards,
+.all-users-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+/* Estilo para destacar la sección activa */
+.dashboard-section:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}

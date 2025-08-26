@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="responsive-cards.css">
     <link rel="stylesheet" href="dashboard-visual-improvements.css">
     <link rel="stylesheet" href="sections-layout.css">
+    <link rel="stylesheet" href="section-improvements.css">
+    <link rel="stylesheet" href="message-styles.css">
 </head>
 <body>
     <div class="dashboard-layout">
@@ -33,8 +35,30 @@
             
             <div id="otherUsers">
                 <h2><i class="fas fa-users"></i> Colaboradores</h2>
-                <div id="usersList">
-                    <p>Cargando lista de colaboradores...</p>
+                
+                <!-- Estructura base para las secciones del dashboard -->
+                <div id="usersList" class="dashboard-sections">
+                    <!-- Sección de cumpleaños del mes actual -->
+                    <section class="dashboard-section current-month-birthdays">
+                        <div class="section-header">
+                            <h2><i class="fas fa-birthday-cake"></i> Cumpleaños de este mes</h2>
+                        </div>
+                        <div class="section-content" id="currentMonthContent">
+                            <p>Cargando cumpleaños de este mes...</p>
+                        </div>
+                    </section>
+                    
+                    <!-- Sección de otros colaboradores -->
+                    <section class="dashboard-section all-collaborators">
+                        <div class="section-header">
+                            <h2><i class="fas fa-users"></i> Otros colaboradores</h2>
+                        </div>
+                        <div class="section-content">
+                            <div class="all-users-container" id="otherUsersContent">
+                                <p>Cargando otros colaboradores...</p>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </main>

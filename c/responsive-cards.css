@@ -1,29 +1,87 @@
-/* Media queries para diseño responsivo de tarjetas */
-@media (min-width: 1200px) {
-    .user-card {
-        width: calc(25% - 15px); /* 4 tarjetas por fila en pantallas grandes */
-    }
+/* Estilos para las tarjetas responsivas */
+.user-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 220px;
+    margin: 10px;
 }
 
-@media (min-width: 992px) and (max-width: 1199px) {
-    .user-card {
-        width: calc(33.333% - 15px); /* 3 tarjetas por fila en pantallas medianas-grandes */
-    }
+.user-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-@media (min-width: 768px) and (max-width: 991px) {
-    .user-card {
-        width: calc(50% - 15px); /* 2 tarjetas por fila en pantallas medianas */
-    }
+.user-card img, .user-card .user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #6c757d;
 }
 
-@media (max-width: 767px) {
-    .user-card {
-        width: 100%; /* 1 tarjeta por fila en dispositivos móviles */
+.user-card h3 {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.user-card p {
+    margin: 0.25rem 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.user-card .company {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.user-card .birthday {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.user-card .cake-icon {
+    color: #ff6b6b;
+    margin-right: 5px;
+}
+
+/* Contenedor horizontal para tarjetas */
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+/* Media queries para responsive */
+@media (max-width: 768px) {
+    .cards-container {
+        justify-content: center;
     }
     
-    .month-birthday-cards,
-    .all-users-container {
-        gap: 15px;
+    .user-card {
+        width: calc(50% - 1rem);
+        min-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-card {
+        width: 100%;
     }
 }

@@ -1,58 +1,115 @@
-/* Estilos para las secciones del dashboard */
+/* Estilos para la disposición de las secciones */
+.main-content {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Organización de secciones verticalmente (una sobre otra) */
 .dashboard-sections {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 2rem;
 }
 
-.dashboard-section {
-    width: 100%;
-    border-radius: 16px;
-    overflow: hidden;
+.section {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.birthday-section {
-    order: 1; /* Aparece primero */
+.section-header {
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.other-users-section {
-    order: 2; /* Aparece segundo */
-    background-color: #f5f9ff;
-    border-radius: 16px;
-    padding: 25px;
-    box-shadow: 0 5px 20px rgba(51, 153, 255, 0.15);
-    border-left: 5px solid #3399ff;
+.section-header h2 {
+    margin: 0;
+    color: #343a40;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
 }
 
-.other-users-section h3 {
-    color: #2a6496;
-    margin-top: 0;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba(51, 153, 255, 0.3);
-    font-size: 22px;
+.section-header h2 i {
+    margin-right: 10px;
+    color: #007bff;
 }
 
-/* Asegurarse de que el contenido de la sección de cumpleaños de agosto se muestre correctamente */
-.birthday-section .birthday-month-container {
-    margin-bottom: 0;
+.section-header .section-actions {
+    display: flex;
+    gap: 10px;
 }
 
-/* Ajuste de espaciado general */
-.main-content {
-    padding-bottom: 50px;
+.section-header .section-actions button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #6c757d;
+    transition: color 0.2s;
+    font-size: 0.9rem;
 }
 
-/* Añadir un poco de espacio adicional en dispositivos móviles */
+.section-header .section-actions button:hover {
+    color: #007bff;
+}
+
+.section-content {
+    margin-top: 1rem;
+}
+
+/* Estilos para secciones específicas */
+.current-month-birthdays {
+    background-color: #fff3e0;
+    border-left: 4px solid #ff9800;
+}
+
+.current-month-birthdays .section-header h2 i {
+    color: #ff9800;
+}
+
+.all-collaborators {
+    background-color: #e8f5e9;
+    border-left: 4px solid #4caf50;
+}
+
+.all-collaborators .section-header h2 i {
+    color: #4caf50;
+}
+
+/* Indicador de cumpleaños del día */
+.today-birthday {
+    position: relative;
+}
+
+.today-birthday::after {
+    content: "¡Hoy!";
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #ff5252;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Media queries para responsividad */
 @media (max-width: 768px) {
     .dashboard-sections {
-        gap: 30px;
+        gap: 1rem;
     }
     
-    .dashboard-section {
-        padding: 20px;
+    .section {
+        padding: 1rem;
     }
     
-    .other-users-section {
-        padding: 20px;
+    .section-header h2 {
+        font-size: 1.25rem;
     }
 }

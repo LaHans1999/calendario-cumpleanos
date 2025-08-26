@@ -1,0 +1,51 @@
+
+/* Hacer que las secciones abarquen más espacio horizontal */
+.dashboard-section {
+    max-width: 100% !important;
+    box-sizing: border-box;
+   /* flex-direction: row; */
+}
+
+/* Mejorar la distribución de las tarjetas */
+.cards-container, 
+.month-birthday-cards,
+.all-users-container {
+    display: flex;
+   /* flex-wrap: wrap; */
+     flex-direction: row;
+    justify-content: flex-start;
+    gap: 20px;
+    width: 100%;
+}
+
+/* Reducir el ancho mínimo de las tarjetas para mostrar más en una fila */
+.user-card {
+    flex: 0 0 calc(20% - 20px); /* 5 tarjetas por fila con un espacio de 20px */
+    min-width: 200px;
+    margin: 0;
+}
+
+/* Media queries para diferentes tamaños de pantalla */
+@media (max-width: 1400px) {
+    .user-card {
+        flex: 0 0 calc(25% - 20px); /* 4 tarjetas por fila */
+    }
+}
+
+@media (max-width: 1200px) {
+    .user-card {
+        flex: 0 0 calc(33.333% - 20px); /* 3 tarjetas por fila */
+    }
+}
+
+@media (max-width: 992px) {
+    .user-card {
+        flex: 0 0 calc(50% - 20px); /* 2 tarjetas por fila */
+    }
+}
+
+@media (max-width: 576px) {
+    .user-card {
+        flex: 0 0 100%; /* 1 tarjeta por fila */
+    }
+}
