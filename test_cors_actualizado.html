@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba de CORS con Vercel - URL Actualizada</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prueba de CORS con Google Apps Script</h1>
+    <div class="container">
+        <h2>Configuración</h2>
+        <p>URL actualizada del Google Apps Script:</p>
+        <input type="text" id="scriptUrl" placeholder="URL del Google Apps Script" 
+               value="https://script.google.com/macros/s/AKfycbwd7jA4OV0BEUwgwjZ_ypBI2FCTzpjgaX2XcimvfBFojTWZgb69cPxm_VNLwe7dTpZ0HQ/exec">
+        
+        <h2>Pruebas</h2>
+        <p>Selecciona una prueba para ejecutar:</p>
+        <button id="testGet">Probar GET (Login)</button>
+        <button id="testPost">Probar POST (Registro)</button>
+        
+        <h2>Resultado</h2>
+        <div id="result">Los resultados aparecerán aquí...</div>
+    </div>
+
+    <script>
+        // Elementos del DOM
+        const scriptUrlInput = document.getElementById('scriptUrl');
+        const testGetButton = document.getElementById('testGet');
+        const testPostButton = document.getElementById('testPost');
+        const resultDiv = document.getElementById('result');
+
+        // Función para mostrar resultados
+        function showResult(message, isError = false) {
+            resultDiv.innerHTML = message;
+            resultDiv.className = isError ? 'error' : 'success';
+        }
+
+        // Prueba de solicitud GET (Login)
+        testGetButton.addEventListener('click', async () => {
+            try {
+                const scriptUrl = scriptUrlInput.value;
+                if (!scriptUrl) {
+                    showResult('Por favor, introduce la URL del script', true);
+                    return;
+                }
+
+                showResult('Enviando solicitud GET...');
+                
+                // Crear URL con parámetros para login
+                const url = new URL(scriptUrl);
+                url.searchParams.append('action', 'login');
+                url.searchParams.append('idColaborador', 'test123');
+                url.searchParams.append('password', 'password123');
+                
+                // Realizar la solicitud
+                const response = await fetch(url, {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                // Procesar respuesta
+                const data = await response.json();
+                showResult(`Respuesta recibida (GET):\n${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                showResult(`Error en solicitud GET: ${error.message}`, true);
+                console.error('Error completo:', error);
+            }
+        });
+
+        // Prueba de solicitud POST (Registro)
+        testPostButton.addEventListener('click', async () => {
+            try {
+                const scriptUrl = scriptUrlInput.value;
+                if (!scriptUrl) {
+                    showResult('Por favor, introduce la URL del script', true);
+                    return;
+                }
+
+                showResult('Enviando solicitud POST...');
+                
+                // Preparar FormData para el registro
+                const formData = new FormData();
+                formData.append('action', 'register');
+                formData.append('idColaborador', 'test' + Date.now().toString().substring(7));
+                formData.append('nombre', 'Usuario');
+                formData.append('apellidoPaterno', 'Prueba');
+                formData.append('apellidoMaterno', 'CORS');
+                formData.append('cumpleanos', '2000-01-01');
+                formData.append('email', 'test@example.com');
+                formData.append('compania', 'Test Company');
+                formData.append('password', 'password123');
+                
+                // Convertir FormData a URLSearchParams para enviar como x-www-form-urlencoded
+                const params = new URLSearchParams();
+                for (const pair of formData) {
+                    params.append(pair[0], pair[1]);
+                }
+                
+                // Realizar la solicitud
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: params
+                });
+                
+                // Procesar respuesta
+                const data = await response.json();
+                showResult(`Respuesta recibida (POST):\n${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                showResult(`Error en solicitud POST: ${error.message}`, true);
+                console.error('Error completo:', error);
+            }
+        });
+    </script>
+</body>
+</html>
