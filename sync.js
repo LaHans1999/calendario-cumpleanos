@@ -21,11 +21,13 @@ const syncScript = {
             document.body.appendChild(message);
             
             // Hacer la petición al servidor
+            console.log('Obteniendo usuarios desde:', `${this.scriptURL}?action=getUsers`);
             fetch(`${this.scriptURL}?action=getUsers`, {
                 method: 'GET'
                 // Se elimina mode: 'no-cors' para poder procesar la respuesta
             })
             .then(response => {
+                console.log('Respuesta recibida para getUsers:', response);
                 if (!response.ok) {
                     throw new Error(`Error de red: ${response.status}`);
                 }
@@ -78,11 +80,13 @@ const syncScript = {
                 resolve(userFound);
             } else {
                 // Si no encontramos el usuario en localStorage, hacemos una petición al servidor
+                console.log('Obteniendo datos del usuario con ID:', idColaborador);
                 fetch(`${this.scriptURL}?action=getUserData&idColaborador=${encodeURIComponent(idColaborador)}`, {
                     method: 'GET'
                     // Se elimina mode: 'no-cors' para poder procesar la respuesta
                 })
                 .then(response => {
+                    console.log('Respuesta recibida para getUserData:', response);
                     if (!response.ok) {
                         throw new Error(`Error de red: ${response.status}`);
                     }

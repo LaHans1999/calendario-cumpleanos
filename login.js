@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => {
             console.log('Respuesta recibida:', response);
+            console.log('URL de la solicitud:', `${scriptURL}?action=login&idColaborador=${encodeURIComponent(idColaborador)}&password=${encodeURIComponent(password)}`);
             if (!response.ok) {
                 throw new Error(`Error de red: ${response.status}`);
             }
@@ -35,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             console.log('Datos recibidos del servidor:', data);
+            console.log('Intentando autenticar con ID:', idColaborador);
             
             if (data && data.success) {
                 // Autenticación exitosa
