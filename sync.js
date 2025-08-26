@@ -1,7 +1,7 @@
 //  recuperar y sincronizar usuarios desde Google Sheets
 const syncScript = {
     // URL del script de Google Apps Script 
-    scriptURL: 'https://script.google.com/macros/s/AKfycbzFsCcoTmoCy3pEfMxBfEz7I-eBS4Nw_JMQ4Qe_3eMYbA-iw6K0OcyfzyS9CywZDp8oiA/exec',
+    scriptURL: 'https://script.google.com/macros/s/AKfycbwk8aA1iJTboI0kMX4aYgtt3UymurosaREjBuxiIcgesC9FzscMaH2j_GH2yXFy1l0FTA/exec',
     
     // obtener todos los usuarios desde Google Sheets
     getAllUsers: function() {

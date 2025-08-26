@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('loginForm');
     
     // URL del script de Google Apps
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbzFsCcoTmoCy3pEfMxBfEz7I-eBS4Nw_JMQ4Qe_3eMYbA-iw6K0OcyfzyS9CywZDp8oiA/exec'
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwk8aA1iJTboI0kMX4aYgtt3UymurosaREjBuxiIcgesC9FzscMaH2j_GH2yXFy1l0FTA/exec'
     form.addEventListener('submit', function(event) {
         event.preventDefault();
         
