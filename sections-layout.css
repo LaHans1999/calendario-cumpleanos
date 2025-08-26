@@ -3,6 +3,7 @@
     padding: 20px;
     flex: 1;
     overflow-y: auto;
+    width: calc(100% - 250px); /* Resta el ancho del sidebar */
 }
 
 /* Organización de secciones verticalmente (una sobre otra) */
@@ -10,13 +11,18 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    width: 100%;
+    max-width: 1400px; /* Aumentamos el ancho máximo */
+    margin: 0 auto; /* Centramos si no ocupa todo el ancho */
 }
 
-.section {
+.dashboard-section {
     background-color: #f8f9fa;
     border-radius: 10px;
     padding: 1.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    width: 100%; /* Ocupar todo el ancho disponible */
+    margin-bottom: 1.5rem;
 }
 
 .section-header {
@@ -32,11 +38,13 @@
     font-size: 1.5rem;
     display: flex;
     align-items: center;
+    
 }
 
 .section-header h2 i {
     margin-right: 10px;
     color: #007bff;
+
 }
 
 .section-header .section-actions {
@@ -61,10 +69,11 @@
     margin-top: 1rem;
 }
 
-/* Estilos para secciones específicas */
+/* Estilos específicos para secciones */
 .current-month-birthdays {
     background-color: #fff3e0;
     border-left: 4px solid #ff9800;
+    width: 100%; /* Ocupar todo el ancho disponible */
 }
 
 .current-month-birthdays .section-header h2 i {
@@ -74,6 +83,7 @@
 .all-collaborators {
     background-color: #e8f5e9;
     border-left: 4px solid #4caf50;
+    width: 100%; /* Ocupar todo el ancho disponible */
 }
 
 .all-collaborators .section-header h2 i {
