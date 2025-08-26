@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico de Registro en Google Sheets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, button, textarea, select {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #3367d6;
+        }
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            min-height: 100px;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Diagnóstico de Registro en Google Sheets</h1>
+    
+    <div class="tabs">
+        <div class="tab active" data-tab="registro">Prueba de Registro</div>
+        <div class="tab" data-tab="conexion">Prueba de Conexión</div>
+        <div class="tab" data-tab="formulario">Formulario Completo</div>
+    </div>
+    
+    <div id="registro" class="tab-content active">
+        <div class="form-group">
+            <label for="scriptUrl">URL del Script de Google Apps:</label>
+            <input type="text" id="scriptUrl" value="https://script.google.com/macros/s/AKfycbziHbts4cLX50tdm-thJOeGFWy3idYFvny4RVqgVt5zy3fofpKMuxXts6L_DeBbB0YOZA/exec">
+        </div>
+        
+        <div class="form-group">
+            <label for="idColaborador">ID Colaborador:</label>
+            <input type="text" id="idColaborador" value="TEST-123">
+        </div>
+        
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" value="Usuario">
+        </div>
+        
+        <div class="form-group">
+            <label for="apellidoPaterno">Apellido Paterno:</label>
+            <input type="text" id="apellidoPaterno" value="Prueba">
+        </div>
+        
+        <div class="form-group">
+            <label for="apellidoMaterno">Apellido Materno:</label>
+            <input type="text" id="apellidoMaterno" value="Test">
+        </div>
+        
+        <div class="form-group">
+            <label for="cumpleanos">Fecha de Cumpleaños:</label>
+            <input type="date" id="cumpleanos" value="2000-01-01">
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" value="test@example.com">
+        </div>
+        
+        <div class="form-group">
+            <label for="compania">Compañía:</label>
+            <input type="text" id="compania" value="Empresa Test">
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" value="12345678">
+        </div>
+        
+        <div class="form-group">
+            <label for="metodoEnvio">Método de Envío:</label>
+            <select id="metodoEnvio">
+                <option value="formdata">FormData (recomendado)</option>
+                <option value="urlencoded">URL Encoded</option>
+                <option value="json">JSON</option>
+            </select>
+        </div>
+        
+        <button id="testRegistro">Probar Registro</button>
+    </div>
+    
+    <div id="conexion" class="tab-content">
+        <div class="form-group">
+            <label for="scriptUrlConexion">URL del Script:</label>
+            <input type="text" id="scriptUrlConexion" value="https://script.google.com/macros/s/AKfycbziHbts4cLX50tdm-thJOeGFWy3idYFvny4RVqgVt5zy3fofpKMuxXts6L_DeBbB0YOZA/exec">
+        </div>
+        
+        <div class="form-group">
+            <label for="accion">Acción:</label>
+            <select id="accion">
+                <option value="test">test (simple)</option>
+                <option value="getUsers">getUsers (obtener usuarios)</option>
+                <option value="getUserData">getUserData (datos de un usuario)</option>
+            </select>
+        </div>
+        
+        <div class="form-group" id="idUsuarioGroup" style="display: none;">
+            <label for="idUsuario">ID de Usuario:</label>
+            <input type="text" id="idUsuario" value="">
+        </div>
+        
+        <button id="testConexion">Probar Conexión</button>
+    </div>
+    
+    <div id="formulario" class="tab-content">
+        <form id="registroForm">
+            <div class="form-group">
+                <label for="scriptUrlForm">URL del Script:</label>
+                <input type="text" id="scriptUrlForm" name="scriptUrlForm" value="https://script.google.com/macros/s/AKfycbziHbts4cLX50tdm-thJOeGFWy3idYFvny4RVqgVt5zy3fofpKMuxXts6L_DeBbB0YOZA/exec">
+            </div>
+            
+            <div class="form-group">
+                <label for="idColaboradorForm">ID Colaborador:</label>
+                <input type="text" id="idColaboradorForm" name="idColaborador" value="TEST-FORM-123" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="nombreForm">Nombre:</label>
+                <input type="text" id="nombreForm" name="nombre" value="Usuario Form" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="apellidoPaternoForm">Apellido Paterno:</label>
+                <input type="text" id="apellidoPaternoForm" name="apellidoPaterno" value="Prueba Form" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="apellidoMaternoForm">Apellido Materno:</label>
+                <input type="text" id="apellidoMaternoForm" name="apellidoMaterno" value="Test Form">
+            </div>
+            
+            <div class="form-group">
+                <label for="cumpleanosForm">Fecha de Cumpleaños:</label>
+                <input type="date" id="cumpleanosForm" name="cumpleanos" value="2000-01-01">
+            </div>
+            
+            <div class="form-group">
+                <label for="emailForm">Email:</label>
+                <input type="email" id="emailForm" name="email" value="test.form@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="companiaForm">Compañía:</label>
+                <input type="text" id="companiaForm" name="compania" value="Empresa Test Form">
+            </div>
+            
+            <div class="form-group">
+                <label for="passwordForm">Contraseña:</label>
+                <input type="password" id="passwordForm" name="password" value="12345678" required>
+            </div>
+            
+            <input type="hidden" name="action" value="register">
+            
+            <button type="submit">Enviar Formulario</button>
+        </form>
+    </div>
+    
+    <h2>Resultado:</h2>
+    <div id="resultado">Los resultados aparecerán aquí...</div>
+    
+    <script>
+        // Manejo de pestañas
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Desactivar todas las pestañas
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Activar la pestaña seleccionada
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab).classList.add('active');
+            });
+        });
+        
+        // Cambiar visibilidad del campo ID usuario según la acción seleccionada
+        document.getElementById('accion').addEventListener('change', function() {
+            const idUsuarioGroup = document.getElementById('idUsuarioGroup');
+            idUsuarioGroup.style.display = this.value === 'getUserData' ? 'block' : 'none';
+        });
+        
+        // Prueba de registro
+        document.getElementById('testRegistro').addEventListener('click', function() {
+            const scriptURL = document.getElementById('scriptUrl').value.trim();
+            const idColaborador = document.getElementById('idColaborador').value.trim();
+            const nombre = document.getElementById('nombre').value.trim();
+            const apellidoPaterno = document.getElementById('apellidoPaterno').value.trim();
+            const apellidoMaterno = document.getElementById('apellidoMaterno').value.trim();
+            const cumpleanos = document.getElementById('cumpleanos').value;
+            const email = document.getElementById('email').value.trim();
+            const compania = document.getElementById('compania').value.trim();
+            const password = document.getElementById('password').value;
+            const metodoEnvio = document.getElementById('metodoEnvio').value;
+            
+            // Validación básica
+            if (!scriptURL || !idColaborador || !nombre || !apellidoPaterno || !password) {
+                mostrarResultado('Por favor, complete todos los campos obligatorios', 'error');
+                return;
+            }
+            
+            // Mostrar que estamos enviando
+            mostrarResultado('Enviando datos de registro...', '');
+            
+            let fetchOptions = {
+                method: 'POST',
+                headers: {}
+            };
+            
+            // Configurar el cuerpo de la solicitud según el método seleccionado
+            if (metodoEnvio === 'formdata') {
+                const formData = new FormData();
+                formData.append('action', 'register');
+                formData.append('idColaborador', idColaborador);
+                formData.append('nombre', nombre);
+                formData.append('apellidoPaterno', apellidoPaterno);
+                formData.append('apellidoMaterno', apellidoMaterno);
+                formData.append('cumpleanos', cumpleanos);
+                formData.append('email', email);
+                formData.append('compania', compania);
+                formData.append('password', password);
+                
+                fetchOptions.body = formData;
+                // No establecer Content-Type, FormData lo establece automáticamente
+            } 
+            else if (metodoEnvio === 'urlencoded') {
+                const params = new URLSearchParams();
+                params.append('action', 'register');
+                params.append('idColaborador', idColaborador);
+                params.append('nombre', nombre);
+                params.append('apellidoPaterno', apellidoPaterno);
+                params.append('apellidoMaterno', apellidoMaterno);
+                params.append('cumpleanos', cumpleanos);
+                params.append('email', email);
+                params.append('compania', compania);
+                params.append('password', password);
+                
+                fetchOptions.body = params.toString();
+                fetchOptions.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            } 
+            else if (metodoEnvio === 'json') {
+                const data = {
+                    action: 'register',
+                    idColaborador: idColaborador,
+                    nombre: nombre,
+                    apellidoPaterno: apellidoPaterno,
+                    apellidoMaterno: apellidoMaterno,
+                    cumpleanos: cumpleanos,
+                    email: email,
+                    compania: compania,
+                    password: password
+                };
+                
+                fetchOptions.body = JSON.stringify(data);
+                fetchOptions.headers['Content-Type'] = 'application/json';
+            }
+            
+            // Log para verificar qué estamos enviando
+            console.log('Opciones de fetch:', fetchOptions);
+            
+            // Enviar solicitud
+            fetch(scriptURL, fetchOptions)
+                .then(response => {
+                    console.log('Respuesta completa:', response);
+                    
+                    // Intentar leer los headers
+                    const headers = {};
+                    response.headers.forEach((value, key) => {
+                        headers[key] = value;
+                    });
+                    
+                    // Información de depuración
+                    let resultadoHTML = `
+                        <p>Status: ${response.status} ${response.statusText}</p>
+                        <p>Type: ${response.type}</p>
+                        <p>OK: ${response.ok}</p>
+                        <p>Headers: <pre>${JSON.stringify(headers, null, 2)}</pre></p>
+                    `;
+                    
+                    if (!response.ok && response.type !== 'opaque') {
+                        throw new Error(`Error de red: ${response.status}`);
+                    }
+                    
+                    return response.text().then(text => {
+                        let jsonData;
+                        try {
+                            jsonData = JSON.parse(text);
+                            resultadoHTML += `<p>Respuesta JSON: <pre>${JSON.stringify(jsonData, null, 2)}</pre></p>`;
+                        } catch (e) {
+                            resultadoHTML += `<p>Respuesta (texto): <pre>${text}</pre></p>`;
+                        }
+                        return { resultadoHTML, jsonData };
+                    });
+                })
+                .then(({ resultadoHTML, jsonData }) => {
+                    if (jsonData && jsonData.success) {
+                        mostrarResultado(`
+                            <p class="success">✅ Registro exitoso!</p>
+                            ${resultadoHTML}
+                        `, 'success');
+                    } else {
+                        mostrarResultado(`
+                            <p class="error">❌ Problema en el registro:</p>
+                            ${resultadoHTML}
+                        `, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    mostrarResultado(`
+                        <p class="error">❌ Error de conexión:</p>
+                        <p>Nombre: ${error.name}</p>
+                        <p>Mensaje: ${error.message}</p>
+                        <p>Stack: <pre>${error.stack}</pre></p>
+                    `, 'error');
+                });
+        });
+        
+        // Prueba de conexión
+        document.getElementById('testConexion').addEventListener('click', function() {
+            const scriptURL = document.getElementById('scriptUrlConexion').value.trim();
+            const accion = document.getElementById('accion').value;
+            let url = `${scriptURL}?action=${accion}`;
+            
+            // Añadir ID de usuario si es necesario
+            if (accion === 'getUserData') {
+                const idUsuario = document.getElementById('idUsuario').value.trim();
+                if (!idUsuario) {
+                    mostrarResultado('Por favor, ingrese el ID de usuario', 'error');
+                    return;
+                }
+                url += `&idColaborador=${encodeURIComponent(idUsuario)}`;
+            }
+            
+            if (!scriptURL) {
+                mostrarResultado('Por favor, ingresa la URL del script', 'error');
+                return;
+            }
+            
+            mostrarResultado('Probando conexión...', '');
+            console.log('URL de conexión:', url);
+            
+            fetch(url)
+                .then(response => {
+                    console.log('Respuesta de conexión:', response);
+                    
+                    const headers = {};
+                    response.headers.forEach((value, key) => {
+                        headers[key] = value;
+                    });
+                    
+                    let resultadoHTML = `
+                        <p>Status: ${response.status} ${response.statusText}</p>
+                        <p>Type: ${response.type}</p>
+                        <p>OK: ${response.ok}</p>
+                        <p>Headers: <pre>${JSON.stringify(headers, null, 2)}</pre></p>
+                    `;
+                    
+                    return response.text().then(text => {
+                        try {
+                            const json = JSON.parse(text);
+                            resultadoHTML += `<p>Respuesta JSON: <pre>${JSON.stringify(json, null, 2)}</pre></p>`;
+                        } catch (e) {
+                            resultadoHTML += `<p>Respuesta (texto): <pre>${text}</pre></p>`;
+                        }
+                        return resultadoHTML;
+                    });
+                })
+                .then(resultadoHTML => {
+                    mostrarResultado(`
+                        <p class="success">✅ Conexión exitosa!</p>
+                        ${resultadoHTML}
+                    `, 'success');
+                })
+                .catch(error => {
+                    console.error('Error de conexión:', error);
+                    mostrarResultado(`
+                        <p class="error">❌ Error de conexión:</p>
+                        <p>Nombre: ${error.name}</p>
+                        <p>Mensaje: ${error.message}</p>
+                        <p>Stack: <pre>${error.stack}</pre></p>
+                    `, 'error');
+                });
+        });
+        
+        // Formulario completo
+        document.getElementById('registroForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const form = this;
+            const scriptURL = document.getElementById('scriptUrlForm').value.trim();
+            
+            mostrarResultado('Enviando formulario...', '');
+            
+            const formData = new FormData(form);
+            
+            // Eliminar el campo scriptUrlForm que no debe enviarse al servidor
+            formData.delete('scriptUrlForm');
+            
+            console.log('Datos del formulario:', Object.fromEntries(formData));
+            
+            fetch(scriptURL, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log('Respuesta del formulario:', response);
+                
+                const headers = {};
+                response.headers.forEach((value, key) => {
+                    headers[key] = value;
+                });
+                
+                let resultadoHTML = `
+                    <p>Status: ${response.status} ${response.statusText}</p>
+                    <p>Type: ${response.type}</p>
+                    <p>OK: ${response.ok}</p>
+                    <p>Headers: <pre>${JSON.stringify(headers, null, 2)}</pre></p>
+                `;
+                
+                return response.text().then(text => {
+                    try {
+                        const json = JSON.parse(text);
+                        resultadoHTML += `<p>Respuesta JSON: <pre>${JSON.stringify(json, null, 2)}</pre></p>`;
+                        return { resultadoHTML, success: json && json.success };
+                    } catch (e) {
+                        resultadoHTML += `<p>Respuesta (texto): <pre>${text}</pre></p>`;
+                        return { resultadoHTML, success: false };
+                    }
+                });
+            })
+            .then(({ resultadoHTML, success }) => {
+                if (success) {
+                    mostrarResultado(`
+                        <p class="success">✅ Formulario enviado exitosamente!</p>
+                        ${resultadoHTML}
+                    `, 'success');
+                    form.reset();
+                } else {
+                    mostrarResultado(`
+                        <p class="error">❌ Problema al enviar el formulario:</p>
+                        ${resultadoHTML}
+                    `, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error al enviar formulario:', error);
+                mostrarResultado(`
+                    <p class="error">❌ Error al enviar formulario:</p>
+                    <p>Nombre: ${error.name}</p>
+                    <p>Mensaje: ${error.message}</p>
+                    <p>Stack: <pre>${error.stack}</pre></p>
+                `, 'error');
+            });
+        });
+        
+        function mostrarResultado(html, tipo) {
+            const resultadoEl = document.getElementById('resultado');
+            resultadoEl.innerHTML = html;
+            resultadoEl.className = tipo || '';
+            
+            // Hacer scroll hasta el resultado
+            resultadoEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
+</body>
+</html>
